@@ -1,6 +1,6 @@
 /** Textual markov chain generator. */
 
-const _ = require('lodash');
+const sample = require('lodash/sample');
 
 class MarkovMachine {
 
@@ -35,9 +35,7 @@ class MarkovMachine {
       const nextWord = this.words[i+1] || null;
 
       if (chains.has(word)) {
-        if (!chains.get(word).includes(nextWord)) {
-          chains.get(word).push(nextWord);
-        }
+        chains.get(word).push(nextWord);
       } else {
         chains.set(word, [nextWord]);
       }
@@ -53,11 +51,15 @@ class MarkovMachine {
   getText() {
     let outputText = [];
 
-    let prevWord = Array.from(this.chains.keys())[0];
+    if (this.words.length <= 0) {
+      return '';
+    }
+
+    let prevWord = this.words[0];
 
     while (prevWord !== null) {
       outputText.push(prevWord);
-      prevWord = _.sample(this.chains.get(prevWord));
+      prevWord = sample(this.chains.get(prevWord));
     }
 
     return outputText.join(' ');
