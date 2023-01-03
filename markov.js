@@ -1,5 +1,6 @@
 /** Textual markov chain generator. */
 
+const _ = require('lodash');
 
 class MarkovMachine {
 
@@ -15,7 +16,7 @@ class MarkovMachine {
   /** Get markov chain: returns Map of Markov chains.
    *
    *  For text of "The cat in the hat.", chains will be:
-   * 
+   *
    *  {
    *   "The": ["cat"],
    *   "cat": ["in"],
@@ -23,11 +24,26 @@ class MarkovMachine {
    *   "the": ["hat."],
    *   "hat.": [null],
    *  }
-   * 
+   *
    * */
 
   getChains() {
-    // TODO: implement this!
+    let chains = new Map();
+
+    for (let i = 0; i < this.words.length; i++) {
+      const word = this.words[i];
+      const nextWord = this.words[i+1] || null;
+
+      if (chains.has(word)) {
+        if (!chains.get(word).includes(nextWord)) {
+          chains.get(word).push(nextWord);
+        }
+      } else {
+        chains.set(word, [nextWord]);
+      }
+    }
+
+    return chains;
   }
 
 
@@ -35,10 +51,19 @@ class MarkovMachine {
    *  until it hits a null choice. */
 
   getText() {
-    // TODO: implement this!
+    let outputText = [];
 
-    // - start at the first word in the input text
-    // - find a random word from the following-words of that
-    // - repeat until reaching the terminal null
+    let prevWord = Array.from(this.chains.keys())[0];
+
+    while (prevWord !== null) {
+      outputText.push(prevWord);
+      prevWord = _.sample(this.chains.get(prevWord));
+    }
+
+    return outputText.join(' ');
   }
 }
+
+const catInHatMachine = new MarkovMachine("The cat in the hat. The cat is also not in the hat simultaneously.");
+console.log(catInHatMachine.chains);
+console.log(catInHatMachine.getText());
