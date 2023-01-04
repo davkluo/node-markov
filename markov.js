@@ -68,8 +68,4 @@ class MarkovMachine {
   }
 }
 
-const catInHatMachine = new MarkovMachine("The cat in the hat. The cat is also not in the hat simultaneously.");
-console.log(catInHatMachine.chains);
-console.log(catInHatMachine.getText());
-
 module.exports = MarkovMachine;
